@@ -11,7 +11,7 @@ router.post("/login", loginAdmin)
 
 // Create admin
 
-router.post("/create-admin", createAdmin)
+router.post("/create-admin", checkAdminAuth, createAdmin)
 
 // Check admin
 

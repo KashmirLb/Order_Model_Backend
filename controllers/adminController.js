@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt'
 import { generateAdminId } from "../helpers/generateAdminId.js"
 import generateJWT from "../helpers/generateJWT.js"
 import Admin from "../models/Admin.js"
@@ -11,6 +10,11 @@ import Asset from "../models/Asset.js"
 const createAdmin = async (req,res) => {
 
     const { name, lastName, email } = req.body
+
+    if(req.admin.adminId.includes("E003")){
+        const error = new Error("This account has no permissions to do this!")
+        return res.status(401).json({msg: error.message})
+    }
 
     const nameExists = await Admin.findOne({name: name, lastName: lastName}) 
     const emailExists = await Admin.findOne({email}) 
@@ -173,6 +177,11 @@ const updateAdmin = async (req, res)=>{
 
 const resetPassword = async (req, res) =>{
 
+    if(req.admin.adminId.includes("E003")){
+        const error = new Error("This account has no permissions to do this!")
+        return res.status(401).json({msg: error.message})
+    }
+
     const admin = await Admin.findById(req.body._id)
   
     admin.password = req.body.password
@@ -187,6 +196,12 @@ const resetPassword = async (req, res) =>{
 // Disable or activate admin account
 
 const activateDisableAdmin = async (req,res)=>{
+
+    if(req.admin.adminId.includes("E003")){
+        const error = new Error("This account has no permissions to do this!")
+        return res.status(401).json({msg: error.message})
+    }
+    
     const admin = await Admin.findById(req.body._id)
 
     admin.active = !admin.active
